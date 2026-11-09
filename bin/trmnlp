@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-# Pin the runtime tested for this plugin; update deliberately with the tests.
+# Use the tested image's own runner: it handles host file ownership, Firefox's
+# writable home and platform-specific Docker options.
 IMAGE="trmnl/trmnlp@sha256:5e83f56494e1a673b141417823f073cf8237458587e650ec685beb89ce724ac2"
 if [ ! -f .trmnlp.yml ]; then python3 bin/sample-config.py; fi
-if [ "${1:-}" = "serve" ]; then
-  exec docker run --rm -p 127.0.0.1:4567:4567 -v "$PWD:/plugin" "$IMAGE" "$@"
-fi
-exec docker run --rm -v "$PWD:/plugin" "$IMAGE" "$@"
+RUNNER=$(mktemp)
+trap 'rm -f "$RUNNER"' EXIT
+docker run --rm --entrypoint cat "$IMAGE" /app/templates/run_in_docker > "$RUNNER"
+IMAGE="$IMAGE" bash "$RUNNER" "$@"
