@@ -1,0 +1,8 @@
+_build/
+.cache/
+.trmnlp/
+.env*
+*.local.yml
+node_modules/
+.DS_Store
+.trmnlp.yml

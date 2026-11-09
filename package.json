@@ -1,0 +1,9 @@
+{
+  "name": "clawnify-trmnl-plugin",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Clawnify app tiles on TRMNL e-paper displays",
+  "license": "MIT",
+  "scripts": { "test": "node --test tests/*.test.mjs", "package": "python3 bin/package.py" },
+  "engines": { "node": ">=22" }
+}

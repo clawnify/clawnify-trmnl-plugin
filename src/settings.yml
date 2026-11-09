@@ -1,0 +1,26 @@
+---
+name: Clawnify
+description: Your Clawnify app on TRMNL.
+strategy: polling
+polling_url: https://provision.clawnify.com/displays/trmnl
+polling_verb: GET
+polling_headers: |
+  authorization: Bearer {{ display_key | url_encode }}
+  accept: application/json
+refresh_interval: 15
+no_screen_padding: 'no'
+dark_mode: 'no'
+framework_version: latest
+serverless_language: node
+custom_fields:
+  - keyname: about
+    name: About this plugin
+    field_type: author_bio
+    category: analytics
+    description: Show selected tiles from a Clawnify app. The app stays private; this connection can only read its chosen tiles.
+    github_url: https://github.com/clawnify/clawnify-trmnl-plugin
+    learn_more_url: https://clawnify.com
+  - keyname: display_key
+    name: Display key
+    field_type: password
+    description: In your published Clawnify app, open Display on TRMNL, choose tiles and create a connection. Paste its display key here.

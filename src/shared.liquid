@@ -1,0 +1,58 @@
+<style>
+  .clawnify-grid { display: grid; width: 100%; height: 100%; min-height: 0; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(0, 1fr); }
+  .clawnify-grid--vertical, .clawnify-grid--quadrant, .clawnify-grid--single { grid-template-columns: 1fr; }
+  .clawnify-card { border: 2px solid currentColor; padding: 12px; min-height: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+  .clawnify-heading { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .clawnify-value { line-height: 1.1; font-weight: 700; font-variant-numeric: tabular-nums; margin: auto 0; overflow-wrap: anywhere; }
+  .clawnify-trend-value { line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .clawnify-chart { width: 100%; min-height: 12px; flex: 1; }
+  .clawnify-row { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .clawnify-label { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .clawnify-amount { flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .clawnify-item { padding: 4px 0; border-bottom: 1px solid currentColor;  }
+</style>
+
+{% template card %}
+  <section class="clawnify-card">
+    <h2 class="label lg:label--large clawnify-heading">{{ widget.title | escape }}</h2>
+    {% if widget.empty %}
+      <span class="description">No data</span>
+    {% elsif widget.kind == 'metric' %}
+      <strong class="value value--large lg:value--xxlarge value--tnums clawnify-value">{{ widget.value | escape }}</strong>
+    {% elsif widget.kind == 'series' %}
+      <strong class="value value--small lg:value--large value--tnums clawnify-trend-value">{{ widget.value | escape }}</strong>
+      <svg class="clawnify-chart" viewBox="0 0 300 60" role="img" aria-label="Trend">
+        <polyline points="{{ widget.coordinates | escape }}" fill="none" stroke="currentColor" stroke-width="3" />
+        {% if widget.single %}<circle cx="4" cy="30" r="3" fill="currentColor" />{% endif %}
+      </svg>
+      <div class="clawnify-row label label--small lg:label--base"><span class="clawnify-label">{{ widget.first | escape }}</span><span class="clawnify-label">{{ widget.last | escape }}</span></div>
+    {% else %}
+      {% for item in widget.items limit: 2 %}
+        <div class="description lg:description--large clawnify-item">
+          <div class="clawnify-row"><span class="clawnify-label">{{ item.label | escape }}</span>{% if item.value %}<strong class="clawnify-amount">{{ item.value | escape }}</strong>{% endif %}</div>
+          {% if item.meta != blank %}<div class="clawnify-label label label--small lg:label--base">{{ item.meta | escape }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      {% if widget.items.size > 2 %}<span class="label label--small lg:label--base">+{{ widget.items.size | minus: 2 }} more</span>{% endif %}
+    {% endif %}
+  </section>
+{% endtemplate %}
+
+{% template dashboard %}
+  {% if error %}
+    <div class="layout layout--col gap--small">
+      <span class="title">Display unavailable</span>
+      <span class="description" data-clamp="3">{{ error | escape }}</span>
+    </div>
+  {% else %}
+    <div class="layout">
+      <div class="clawnify-grid clawnify-grid--{{ mode }} {% if widgets.size == 1 %}clawnify-grid--single{% endif %}">
+        {% for widget in widgets limit: count %}{% render "card", widget: widget %}{% endfor %}
+      </div>
+    </div>
+  {% endif %}
+  <div class="title_bar">
+    <span class="title">{{ title | escape }}</span>
+    <span class="instance">{% if mode == "vertical" or mode == "quadrant" %}{{ fetched_short | escape }}{% else %}{% if error %}Checked{% else %}Fetched{% endif %} {{ fetched_at | escape }}{% endif %}{% if widgets.size > count %} · +{{ widgets.size | minus: count }}{% endif %}</span>
+  </div>
+{% endtemplate %}
