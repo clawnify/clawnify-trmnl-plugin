@@ -30,13 +30,25 @@ This is a read-only view of app data. Interactive controls and arbitrary web pag
 
 ## Setup
 
-Open a published Clawnify app that exposes dashboard widgets. Its toolbar includes **Display on TRMNL**.
+Setup uses the existing Clawnify API through its signed-in CLI. Use a published app that exposes dashboard widgets; replace `your-workspace`, `APP_ID` and the example widget keys below with your own.
 
-1. In the published Clawnify app, open **Display on TRMNL**, choose the tiles to share and select **Create connection**. Copy its display key before closing the dialog.
+1. List available app IDs and widget keys, then create a connection selecting one to four keys:
+
+   ```sh
+   clawnify api '/apps/widgets?scope=all' --org your-workspace
+   clawnify api /apps/APP_ID/display --org your-workspace -X POST \
+     -d '{"widget_keys":["total-stars","stars-90d"]}'
+   ```
+
+   Copy the one-time `token` from the creation response. It is the display key.
 2. Build the import file from this repo with `npm run package` (requires Python 3). In TRMNL, import `_build/clawnify-trmnl-plugin.zip` as a [Private Plugin](https://help.trmnl.com/en/articles/10542599-importing-and-exporting-private-plugins).
 3. Paste the key into the plugin's **Display key** field, then add the plugin to a playlist. The settings request a 15-minute refresh interval; TRMNL's account and device settings control when updates actually reach the display.
 
-To choose different tiles or replace a lost key, open the same Clawnify dialog and select **Replace connection**, then paste the new key into TRMNL. To stop updates, select **Disconnect**. One person has one connection per app; multiple devices can share it, and replacement or disconnection affects all copies.
+Repeat the POST to change tiles or replace a lost key, then paste the new key into TRMNL. One person has one connection per app; multiple devices can share it, and replacement or disconnection affects all copies. To stop updates:
+
+```sh
+clawnify api /apps/APP_ID/display --org your-workspace -X DELETE
+```
 
 ## Privacy and access
 

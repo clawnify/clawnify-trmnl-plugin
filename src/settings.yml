@@ -23,4 +23,4 @@ custom_fields:
   - keyname: display_key
     name: Display key
     field_type: password
-    description: In your published Clawnify app, open Display on TRMNL, choose tiles and create a connection. Paste its display key here.
+    description: Paste the display key created for your Clawnify app. See the repository's setup instructions to create or replace it.
