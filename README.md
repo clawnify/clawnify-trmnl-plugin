@@ -6,7 +6,7 @@ A native TRMNL plugin built with Liquid and a JavaScript transform. TRMNL handle
 
 ![Sample operations dashboard on TRMNL](preview/full.png)
 
-**Status:** The plugin can be previewed and tested locally with the included sample data. The Clawnify display-connection feature is awaiting deployment. Live account and physical-device verification are pending; this is not yet a listed TRMNL recipe.
+**Status:** The Clawnify display connection is deployed. Creation, live polling, key replacement and disconnection have been verified against a published app, including this plugin's transform. TRMNL account import and physical-device verification are still pending; this is not yet a listed TRMNL recipe. You can preview all layouts locally with the included sample data.
 
 ## What it displays
 
@@ -30,7 +30,7 @@ This is a read-only view of app data. Interactive controls and arbitrary web pag
 
 ## Setup
 
-Live setup requires the **Display on TRMNL** button to be available in your Clawnify app. Until then, use the sample preview below.
+Open a published Clawnify app that exposes dashboard widgets. Its toolbar includes **Display on TRMNL**.
 
 1. In the published Clawnify app, open **Display on TRMNL**, choose the tiles to share and select **Create connection**. Copy its display key before closing the dialog.
 2. Build the import file from this repo with `npm run package` (requires Python 3). In TRMNL, import `_build/clawnify-trmnl-plugin.zip` as a [Private Plugin](https://help.trmnl.com/en/articles/10542599-importing-and-exporting-private-plugins).
